@@ -378,6 +378,6 @@ app.post('/send-message', async (req, res) => {
   }
 });
 
-server.listen(port, function() {
-  console.log('App running on *: ' + port);
+server.listen(process.env.PORT || 3000, function(){
+  console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
 });
