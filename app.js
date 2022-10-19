@@ -8,21 +8,11 @@ const { phoneNumberFormatter } = require('./helpers/formatter');
 const axios = require('axios');
 const port = process.env.PORT || 3000;
 const urlServer = 'https://whatsvip.meux.com.br'
-//const urlServer = 'http://10.1.1.18:8000'
 const cors = require('cors')
 
 const app = express();
 
 const ClientPG = require('pg').Pool
-
-/*
-const pg = new ClientPG({
-  host: '10.1.0.26',
-  port: '5432',
-  user: 'postgres',
-  password: '0*-d+r0m@',
-  database: 'whatsapp'
-}) */
 
 const pg = new ClientPG({
   connectionString: 'postgres://pszyzuiwcbzqxo:a32dc9e2f2d2c0d691b56fb66d64f2d4ebdd133a8a0474263584b6e551a59266@ec2-54-173-237-110.compute-1.amazonaws.com:5432/dek8q421ubsss2',
@@ -30,7 +20,6 @@ const pg = new ClientPG({
     rejectUnauthorized: false
   }
 }) 
-
 
 
 var corsOptions = {
@@ -50,7 +39,8 @@ app.use(express.urlencoded({
 app.get('/', (req, res) => {
   return res.status(200).json({
     status: true,
-    message: 'Servidor Online'
+    message: 'Servidor Online',
+    versao: '1.0.1'
   });
 })
 
