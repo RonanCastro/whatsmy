@@ -1,5 +1,0 @@
-2022/10/18-16:23:35.689 3bb8 Creating DB D:\Desenvolvimento\node\bot-zdg\.wwebjs_auth\session-626f0a6aa95e48d1de61877cc00b546a\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb since it was missing.
-2022/10/18-16:23:35.887 3bb8 Reusing MANIFEST D:\Desenvolvimento\node\bot-zdg\.wwebjs_auth\session-626f0a6aa95e48d1de61877cc00b546a\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2022/10/18-16:25:45.963 3d08 Level-0 table #5: started
-2022/10/18-16:25:46.060 3d08 Level-0 table #5: 1231857 bytes OK
-2022/10/18-16:25:46.118 3d08 Delete type=0 #3
