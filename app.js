@@ -40,7 +40,7 @@ app.get('/', (req, res) => {
   return res.status(200).json({
     status: true,
     message: 'Servidor Online',
-    versao: '1.0.2'
+    versao: '1.0.3'
   });
 })
 
@@ -77,7 +77,7 @@ const createSession = async function(id, description) {
   const client = new Client({
     restartOnAuthFail: true,
     puppeteer: {
-      headless: false,
+      headless: true,
       env: {
         DISPLAY: ":10.0"
     },
