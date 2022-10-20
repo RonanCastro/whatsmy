@@ -40,7 +40,7 @@ app.get('/', (req, res) => {
   return res.status(200).json({
     status: true,
     message: 'Servidor Online',
-    versao: '1.0.3'
+    versao: '1.0.4'
   });
 })
 
@@ -77,19 +77,9 @@ const createSession = async function(id, description) {
   const client = new Client({
     restartOnAuthFail: true,
     puppeteer: {
-      headless: true,
-      env: {
-        DISPLAY: ":10.0"
-    },
       args: [
         '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--no-first-run',
-        '--no-zygote',
-        '--single-process', // <- this one doesn't works in Windows
-        '--disable-gpu'
+        '--disable-setuid-sandbox'
       ],
     },
     authStrategy: new LocalAuth({
