@@ -40,7 +40,7 @@ app.get('/', (req, res) => {
   return res.status(200).json({
     status: true,
     message: 'Servidor Online',
-    versao: '1.0.6'
+    versao: '1.0.7'
   });
 })
 
@@ -166,8 +166,13 @@ const createSession = async function(id, description) {
           var rand = Math.round(Math.random() * (15000 - 7000)) + 7000;
           console.log('Executando em: '+rand/1000+' segundos')
           setTimeout(function() {
-                  enviarMensagem(id)
-                  loop();  
+                  const savedSessions = getSessionsFile();
+                  const sessionIndex = savedSessions.findIndex(sess => sess.id == sender);
+                  const sessao = savedSessions[sessionIndex]
+                  if(sessao){
+                    enviarMensagem(id)
+                    loop();
+                  }
           }, rand);
       }());
 
