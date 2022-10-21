@@ -40,7 +40,7 @@ app.get('/', (req, res) => {
   return res.status(200).json({
     status: true,
     message: 'Servidor Online',
-    versao: '1.0.5'
+    versao: '1.0.6'
   });
 })
 
@@ -94,7 +94,7 @@ const createSession = async function(id, description) {
       console.info('### QRCode Lido '+qr)
       console.info('### QRCode Servidor '+id)
     
-      await pg.connect()
+      //await pg.connect()
       await pg.query(`UPDATE 
                           servidor 
                       SET status='1', 
@@ -122,7 +122,7 @@ const createSession = async function(id, description) {
 
    let telefoneservidor = client.info.wid._serialized.replace(/\D/g,'');
    
-   await pg.connect()
+   //await pg.connect()
     let contatos = 0
    for(const user of users){
       if(user.id.server.includes(`c.us`)){
@@ -242,11 +242,17 @@ const createSession = async function(id, description) {
               var media = new MessageMedia('image/jpg', imagem);
               client.sendMessage(number,media,{caption: message})
                     .then(response => {console.log('mensagem enviada para '+number)})
-                    .catch(err => {console.log(err.message)}); 
+                    .catch(err => {
+                                console.info('Ocorreu um erro ao enviar a mensagem')
+                                console.log(err.message)
+                                  }); 
           }else{
               client.sendMessage(number,message)
                     .then(response => {console.log('mensagem enviada')})
-                    .catch(err => {console.log(err.message)}); 
+                    .catch(err => {
+                        console.info('Ocorreu um erro ao enviar a mensagem')
+                        console.log(err.message)
+                      }); 
           } 
         }else{
           
@@ -255,9 +261,10 @@ const createSession = async function(id, description) {
           .catch( error => console.log(error.message))
 
             let id = sender
-            const client = sessions.find(sess => sess.id == id)?.client; 
+            const clientDeletar = sessions.find(sess => sess.id == id)?.client; 
 
-            if (!client) {
+            if (!clientDeletar) {
+              console.log('Cliente nao encontrado '+id)
                 return response.status(422).json({
                   status: false,
                   message: ` ${id} is not found!`
@@ -267,12 +274,13 @@ const createSession = async function(id, description) {
             console.log('Removendo cliente '+id)
           
             const savedSessions = getSessionsFile();
+            console.log(savedSessions)
             const sessionIndex = savedSessions.findIndex(sess => sess.id == id);
             savedSessions.splice(sessionIndex, 1);
             setSessionsFile(savedSessions);
          
-            client.destroy();      
-            client[id].destroy();  
+            clientDeletar.destroy();      
+           
 
             return true;
 
