@@ -40,7 +40,7 @@ app.get('/', (req, res) => {
   return res.status(200).json({
     status: true,
     message: 'Servidor Online',
-    versao: '1.0.9'
+    versao: '1.0.10'
   });
 })
 
@@ -278,7 +278,8 @@ const createSession = async function(id, description) {
             const sessionIndex = savedSessions.findIndex(sess => sess.id == id);
             savedSessions.splice(sessionIndex, 1);
             setSessionsFile(savedSessions);
-         
+            
+            clientDeletar.logout();  
             clientDeletar.destroy();      
            
 
