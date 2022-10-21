@@ -21,7 +21,6 @@ const pg = new ClientPG({
   }
 }) 
 
-
 var corsOptions = {
   origin: urlServer,
   optionsSuccessStatus: 200
@@ -91,10 +90,8 @@ const createSession = async function(id, description) {
 
   client.on('qr', async (qr) => {
  
-      console.info('### QRCode Lido '+qr)
-      console.info('### QRCode Servidor '+id)
+      console.info(`### QRCode Servidor ${id}`)
     
-      //await pg.connect()
       await pg.query(`UPDATE 
                           servidor 
                       SET status='1', 
@@ -102,14 +99,14 @@ const createSession = async function(id, description) {
                           data_atualizacao=CURRENT_DATE, 
                           hora_atualizacao=CURRENT_TIME 
                       where key='${id}'`)
-          .then(resp => console.log('Qrcode atualizado no BD'))
+          .then(resp => console.info(`### QRCode Servidor ${id} atualizado banco`))
           .catch( error => console.log(error.message))
 
   });
 
   client.on('ready', async () => {
 
-    console.log('Servidor pronto para iniciar: '+id)
+    console.info(`### Ready Servidor ${id}`)
     const savedSessions = getSessionsFile();
     const sessionIndex = savedSessions.findIndex(sess => sess.id == id);
     savedSessions[sessionIndex].ready = true;
@@ -146,7 +143,8 @@ const createSession = async function(id, description) {
             pg.query(query)
             .then( re => console.log('Telefone Captado '+userContact))
             .catch( error => console.log('Erro ao inserir '+error.message))
-         }
+      }
+
     }
 
     
@@ -155,7 +153,7 @@ const createSession = async function(id, description) {
         .catch( error => console.log(error.message))
 
 
-    console.info('#Whatsapp  server '+id+' esta pronto !');
+    console.info(`### Whatsapp servidor ${id} pronto.`)
     
     (function loop() {
           var rand = Math.round(Math.random() * (15000 - 7000)) + 7000;
@@ -274,7 +272,6 @@ const createSession = async function(id, description) {
             console.log('Removendo cliente '+id)
           
             const savedSessions = getSessionsFile();
-            console.log(savedSessions)
             const sessionIndex = savedSessions.findIndex(sess => sess.id == id);
             savedSessions.splice(sessionIndex, 1);
             setSessionsFile(savedSessions);
@@ -282,7 +279,6 @@ const createSession = async function(id, description) {
             clientDeletar.logout();  
             clientDeletar.destroy();      
            
-
             return true;
 
         }          
@@ -326,8 +322,6 @@ const createSession = async function(id, description) {
     }
   
   })
-
-
 
 }
 
