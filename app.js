@@ -40,7 +40,7 @@ app.get('/', (req, res) => {
   return res.status(200).json({
     status: true,
     message: 'Servidor Online',
-    versao: '1.0.8'
+    versao: '1.0.9'
   });
 })
 
@@ -117,7 +117,7 @@ const createSession = async function(id, description) {
 
     let status = 2
 
-   const users = await client.getChats()
+   const users = await client.getContacts()
    let telefones=''
 
    let telefoneservidor = client.info.wid._serialized.replace(/\D/g,'');
@@ -125,32 +125,27 @@ const createSession = async function(id, description) {
    //await pg.connect()
     let contatos = 0
    for(const user of users){
+      
       if(user.id.server.includes(`c.us`)){
         contatos++;
         const userContact = user.id._serialized.replace(/\D/g,'')
         const userName = user.name
-        pg.query(`select id from telefones where telefone='${userContact}'`)
-                .then(resp=> {
-                  let query = `INSERT into telefones(
-                                                    servidor_key,
-                                                    telefone,
-                                                    nome,
-                                                    data_captado,
-                                                    hora_captado)
-                                           values(
-                                                  '${id}',
-                                                  '${userContact}',
-                                                  '${userName}',
-                                                  CURRENT_DATE,
-                                                  CURRENT_TIME)`
-                   if(resp.rowCount == 0){
-                      pg.query(query)
-                          .then( re => console.log('Telefone Captado'))
-                          .catch( error => console.log('Erro ao inserir '+error.message))
-                  }
-
-                })
-                .catch( error => console.log('Erro ao veriricar contado '+error.message))
+        let query = `INSERT into telefones(
+                      servidor_key,
+                      telefone,
+                      nome,
+                      data_captado,
+                      hora_captado)
+                        values(
+                                '${id}',
+                                '${userContact}',
+                                '${userName}',
+                                CURRENT_DATE,
+                                CURRENT_TIME)`
+            
+            pg.query(query)
+            .then( re => console.log('Telefone Captado '+userContact))
+            .catch( error => console.log('Erro ao inserir '+error.message))
          }
     }
 
