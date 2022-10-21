@@ -40,7 +40,7 @@ app.get('/', (req, res) => {
   return res.status(200).json({
     status: true,
     message: 'Servidor Online',
-    versao: '1.0.7'
+    versao: '1.0.8'
   });
 })
 
@@ -167,7 +167,7 @@ const createSession = async function(id, description) {
           console.log('Executando em: '+rand/1000+' segundos')
           setTimeout(function() {
                   const savedSessions = getSessionsFile();
-                  const sessionIndex = savedSessions.findIndex(sess => sess.id == sender);
+                  const sessionIndex = savedSessions.findIndex(sess => sess.id == id);
                   const sessao = savedSessions[sessionIndex]
                   if(sessao){
                     enviarMensagem(id)
