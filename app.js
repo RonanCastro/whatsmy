@@ -7,7 +7,7 @@ const fs = require('fs');
 const { phoneNumberFormatter } = require('./helpers/formatter');
 const axios = require('axios');
 const port = process.env.PORT || 3000;
-const urlServer = 'https://whatsvip.meux.com.br'
+const urlServer = 'https://whatsvip.herokuapp.com'
 const cors = require('cors')
 
 const app = express();
