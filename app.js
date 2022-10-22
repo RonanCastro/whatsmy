@@ -68,7 +68,16 @@ const setSessionsFile = function(sessions) {
 }
 
 const getSessionsFile = function() {
+
+  const data = fs.readFileSync(SESSIONS_FILE)
+ 
+  if (data.length == 0) {
+    fs.writeFileSync(SESSIONS_FILE, JSON.stringify([]));
+    console.log('Sessions file vazio e iniciado.'); 
+  }
+
   return JSON.parse(fs.readFileSync(SESSIONS_FILE));
+  
 }
 
 const createSession = async function(id, description) {
@@ -92,13 +101,27 @@ const createSession = async function(id, description) {
  
       console.info(`### QRCode Servidor ${id}`)
     
-      await pg.query(`UPDATE 
-                          servidor 
-                      SET status='1', 
-                          qrcode='${qr}',
-                          data_atualizacao=CURRENT_DATE, 
-                          hora_atualizacao=CURRENT_TIME 
-                      where key='${id}'`)
+      await pg.query(`select id,status from servidor where key='${id}'`)
+                      .then(async resp  => {
+                        try{
+                          console.info(`### Verificando servidor ${resp.rowCount}`)
+                          if(resp.rowCount > 0){
+                            await pg.query(`UPDATE 
+                                                servidor 
+                                            SET status='1', 
+                                                qrcode='${qr}',
+                                                data_atualizacao=CURRENT_DATE, 
+                                                hora_atualizacao=CURRENT_TIME 
+                                            where key='${id}'`)
+                                              
+                          }else{
+                            console.info(`Servidor ${id} nao encontrado, removendo sessao`)
+                            removerSessao(id)
+                          }
+                        } catch (error) {
+                          console.log('Update QR Bd '+error);                          
+                      }                      
+                 })
           .then(resp => console.info(`### QRCode Servidor ${id} atualizado banco`))
           .catch( error => console.log(error.message))
 
@@ -152,10 +175,9 @@ const createSession = async function(id, description) {
         .then(resp => console.log('Servidor Iniciado e contatos exportados '))
         .catch( error => console.log(error.message))
 
-
-    console.info(`### Whatsapp servidor ${id} pronto.`)
+    console.info(`### Whatsapp servidor ${id} pronto.`);
     
-    (function loop() {
+    ( function loop() {
           var rand = Math.round(Math.random() * (15000 - 7000)) + 7000;
           console.log('Executando em: '+rand/1000+' segundos')
           setTimeout(function() {
@@ -287,8 +309,40 @@ const createSession = async function(id, description) {
   }
 
 
+  const removerSessao = async function (sender){
+         
+     try{
+        
+        let id = sender
+        const client = sessions.find(sess => sess.id == id)?.client;
+
+          // Make sure the sender is exists & ready
+        if (!client) {
+            return JSON.parse(`{"status":false,"mensagem":"${id} nao encontrado"}`)
+        }
+      
+        const savedSessions = getSessionsFile();
+        const sessionIndex = savedSessions.findIndex(sess => sess.id == id);
+        savedSessions.splice(sessionIndex, 1);
+        setSessionsFile(savedSessions);
+
+        //client.logout('')
+        client.destroy();
+       // client.initialize();            
+        
+        return JSON.parse(`{"status":true,"mensagem":"${id} sessao apagada"}`)
+    
+      } catch (error) {
+          console.log(error);
+          return JSON.parse(`{"status":false,"mensagem":"${id} erro ao apagar"}`)
+      }
+
+  }
+
+
+
   app.post('/remover-sessao', async (req, res) => {
-    console.log('Remover Sessao '+req.body.id)
+    console.log('Remover Sessao APP '+req.body.id)
     try{
     
       let id = req.body.id
@@ -302,8 +356,9 @@ const createSession = async function(id, description) {
           })
         }
     
+        client.logout()
         client.destroy();
-        client.initialize();
+       // client.initialize();
 
       const savedSessions = getSessionsFile();
       const sessionIndex = savedSessions.findIndex(sess => sess.id == id);
