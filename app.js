@@ -298,7 +298,7 @@ const createSession = async function(id, description) {
             savedSessions.splice(sessionIndex, 1);
             setSessionsFile(savedSessions);
             
-            clientDeletar.logout();  
+          //  clientDeletar.logout();  
             clientDeletar.destroy();      
            
             return true;
