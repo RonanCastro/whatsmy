@@ -39,7 +39,7 @@ app.get('/', (req, res) => {
   return res.status(200).json({
     status: true,
     message: 'Servidor Online',
-    versao: '1.0.10'
+    versao: '1.0.11'
   });
 })
 
@@ -178,7 +178,7 @@ const createSession = async function(id, description) {
     console.info(`### Whatsapp servidor ${id} pronto.`);
     
     ( function loop() {
-          var rand = Math.round(Math.random() * (15000 - 7000)) + 7000;
+          var rand = Math.round(Math.random() * (9000 - 5000)) + 5000;
           console.log('Executando em: '+rand/1000+' segundos')
           setTimeout(function() {
                   const savedSessions = getSessionsFile();
